@@ -1,0 +1,21 @@
+name: CI-CD
+
+on: [push]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build Docker
+      run: docker build -t ticket-backend backend/ticket-service
+
+    - name: Push Image
+      run: |
+        docker tag ticket-backend yourdockerhub/ticket-backend
+        docker push yourdockerhub/ticket-backend
+
+    - name: Deploy
+      run: kubectl apply -f k8s/
+
